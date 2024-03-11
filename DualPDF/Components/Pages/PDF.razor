@@ -1,0 +1,52 @@
+@page "/pdfs"
+@using System.IO
+@using System.Threading
+@using iText.Kernel.Pdf
+
+<link rel="stylesheet" href="styles.css">
+
+
+<div class="pdf-container">
+    <embed class="pdf" src="@linksPDFPath" type="application/pdf">
+    <embed class="pdf" src="@rechtsPDFPath" type="application/pdf">
+</div>
+
+@code {
+    private string linksPDFPath;
+    private string rechtsPDFPath;
+
+    private int currentPage = 1;
+    private Timer timer;
+
+    protected override void OnInitialized()
+    {
+        var linksFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/links");
+        var rechtsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/rechts");
+
+        var linksPDFFiles = Directory.GetFiles(linksFolder, "*.pdf");
+        var rechtsPDFFiles = Directory.GetFiles(rechtsFolder, "*.pdf");
+
+        linksPDFPath = linksPDFFiles.Length > 0 ? $"../../links/{Path.GetFileName(linksPDFFiles[0])}#page={currentPage}" : "";
+        rechtsPDFPath = rechtsPDFFiles.Length > 0 ? $"../../rechts/{Path.GetFileName(rechtsPDFFiles[0])}#page={currentPage}" : "";
+
+        timer = new Timer(ChangePage, null, 10000, 10000); // 10 seconds interval
+    }
+
+    private void ChangePage(object state)
+    {
+        currentPage++;
+        // Reset to page 1 if reached the end
+        if (currentPage > GetNumberOfPages(linksPDFPath))
+            currentPage = 1;
+
+        linksPDFPath = linksPDFPath.Replace($"#page={currentPage - 1}", $"#page={currentPage}");
+        rechtsPDFPath = rechtsPDFPath.Replace($"#page={currentPage - 1}", $"#page={currentPage}");
+
+        InvokeAsync(() => StateHasChanged()); // Invoke StateHasChanged on UI thread
+    }
+
+    private int GetNumberOfPages(string pdfPath)
+    {
+        return GetNumberOfPages(pdfPath);
+    }
+}

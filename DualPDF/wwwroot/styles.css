@@ -1,0 +1,17 @@
+.pdf-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    width: 100vw; /* Set width to 100% of the viewport width */
+    height: 100vh; /* Set height to 100% of the viewport height */
+    overflow-x: hidden; /* Hide horizontal overflow */
+    border-color: gray;
+}
+
+.pdf {
+    flex: 1;
+    height: 100%; /* Set height to 100% of the container height */
+    min-width: 0; /* Ensure the PDFs can shrink */
+    width: 100%; /* Ensure the PDFs fill the container width */
+    border-color: red;
+}
